@@ -22,7 +22,7 @@ def run_discord_bot(token: str):
 
     @client.event
     async def on_ready():
-        print(f'{client.user} is now running!')
+        print(f'{client.user} is now swimming!')
 
     @client.event
     async def on_message(message: message):
