@@ -7,3 +7,5 @@ def handle_response(command: str) -> str:
     match command:
         case "help":
             return ""
+        case _:
+            return "What the fuck do you want?!"
