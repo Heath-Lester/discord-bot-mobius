@@ -1,6 +1,6 @@
 """File for handling Discord bot actions and life cycle"""
 
-from discord import message, Client
+from discord import message, Client, Intents
 from .responses import handle_response
 
 
@@ -18,7 +18,7 @@ async def send_message(message: message, user_message: message, is_private: bool
 
 def run_discord_bot(token: str):
     """Initialize bot actions"""
-    client = Client()
+    client = Client(intents=Intents.default())
 
     @client.event
     async def on_ready():
