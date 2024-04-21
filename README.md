@@ -8,7 +8,7 @@ Temperamental Python (3.12) Discord Bot
 ```sh
 code .
 ```
-4. Create a Python virtual environment ((VSCode VE Setup)[https://code.visualstudio.com/docs/python/python-tutorial#_create-a-virtual-environment])
+4. Create a Python virtual environment ([VSCode VE Setup](https://code.visualstudio.com/docs/python/python-tutorial#_create-a-virtual-environment))
 5. Install project dependencies
 ```sh 
 python3 -m pip install -r requirements.txt
