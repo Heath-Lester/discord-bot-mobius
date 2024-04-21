@@ -4,11 +4,12 @@ from dotenv import load_dotenv
 from bot.bot import run_discord_bot
 
 if __name__ == "__main__":
-    # Access environment variables (.env file)
+    print("Starting bot server...")
+    print("Loading environment variables...")
     load_dotenv()
     TOKEN: str | None = os.getenv("TOKEN")
 
-    # Validate TOKEN
+    print("Validating TOKEN...")
     if TOKEN is None:
         raise ValueError("TOKEN was not provided in environment")
 
@@ -17,7 +18,7 @@ if __name__ == "__main__":
     if TOKEN.__len__ == 0:
         raise ValueError("TOKEN is is empty")
 
-    print("TOKEN validated")
+    print("Bot TOKEN validated")
 
     # Run bot
     run_discord_bot(token=TOKEN)
