@@ -10,26 +10,26 @@ def extract_ats_from_message_content(message_content: str, message_limit: int = 
 
     ats_list: list[str] = []
     current_at = ""
-    bracket_and_positions: dict = {}
+    brackets_and_positions: dict = {}
     for i in range(message_length):
         character = message_content[i]
 
         if character == "<":
-            if bracket_and_positions.get("<") is None and bracket_and_positions.get("@") is None:
-                bracket_and_positions[character] = i
+            if brackets_and_positions.get("<") is None and brackets_and_positions.get("@") is None:
+                brackets_and_positions[character] = i
             else:
-                bracket_and_positions.clear()
+                brackets_and_positions.clear()
         elif character == "@":
-            if bracket_and_positions.get("<") == i - 1 and bracket_and_positions.get("@") is None:
-                bracket_and_positions[character] = i
+            if brackets_and_positions.get("<") == i - 1 and brackets_and_positions.get("@") is None:
+                brackets_and_positions[character] = i
             else:
-                bracket_and_positions.clear()
+                brackets_and_positions.clear()
         elif character == ">":
-            if bracket_and_positions.get("<") is not None and bracket_and_positions.get("@") is not None and len(current_at) > 0:
+            if brackets_and_positions.get("<") is not None and brackets_and_positions.get("@") is not None and len(current_at) > 0:
                 ats_list.append(current_at)
             current_at = ""
-            bracket_and_positions.clear()
-        elif bracket_and_positions.get("<") is not None and bracket_and_positions.get("@") is not None:
+            brackets_and_positions.clear()
+        elif brackets_and_positions.get("<") is not None and brackets_and_positions.get("@") is not None:
             current_at += character
 
     return ats_list

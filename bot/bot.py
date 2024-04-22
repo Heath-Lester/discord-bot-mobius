@@ -4,7 +4,7 @@ from discord import message, Client, Intents
 from .responses import handle_response
 
 
-async def send_message(discord_message: message, command: str, is_private: bool = False):
+async def send_message(discord_message: message, command: str, is_private: bool = False) -> None:
     """Function to control where messages are sent"""
 
     print(f"{discord_message.author} said: '{
