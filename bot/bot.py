@@ -21,15 +21,10 @@ async def send_message(discord_message: message, command: str, is_private: bool 
 
 
 def run_discord_bot(token: str, client: Client) -> None:
-    """Initialize bot actions"""
-    mobius_id: str = ""
-    mobius_name: str = ""
+    """Initialize bot with actions definitions"""
 
     @client.event
     async def on_ready():
-        # Set Mobius properties used for comparison once after initialization
-        mobius_id = str(client.user.id)
-        mobius_name = client.user.name.lower()
         print(f'{client.user} is now online!')
 
     @client.event
@@ -39,10 +34,13 @@ def run_discord_bot(token: str, client: Client) -> None:
             return
 
         if discord_message.content is not None and len(discord_message.content) > 0:
+            # mobius_name: str = client.user.name.lower()
+            mobius_id: str = str(client.user.id)
             if discord_message.content.startswith("!"):
                 await send_message(discord_message, discord_message.content[1:], False)
-            elif mobius_name in discord_message.content.lower():
-                await send_message(discord_message, discord_message.content, False)
+            # Add for talking shit when mentioned
+            # elif mobius_name in discord_message.content.lower():
+            #     await send_message(discord_message, discord_message.content, False)
             elif mobius_id in discord_message.content:
                 await send_message(discord_message, discord_message.content, False)
 
