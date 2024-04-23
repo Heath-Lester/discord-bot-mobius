@@ -14,11 +14,18 @@ code .
 ```sh 
 python3 -m pip install -r requirements.txt
 ```
-6. Create an `.env` file at the project level with bot token
+6. Create a `config.json` file and add a `prefix` and `invite_link`:
+```json
+{
+    "prefix": "!",
+    "invite_link": "https://discord.com/oauth2/authorize?client_id=1231284567344812033&permissions=633318429163329&scope=bot"
+}
+```
+7. Create an `.env` file at the project level with bot token
 ```sh
 TOKEN=discord_bot_token_without_quotes
 ```
-7. Start the server
+8. Start the server
 ```sh
 python3 main.py runserver
 ```
