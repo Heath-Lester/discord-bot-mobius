@@ -8,9 +8,9 @@ from platform import python_version, system, release
 from aiosqlite import connect
 from discord import Message, Embed, Intents, Activity, ActivityType, DiscordException, __version__ as discord_version
 from discord.ext.tasks import loop
-from discord.ext.commands import Bot, Context, CommandOnCooldown, NotOwner, MissingPermissions, BotMissingPermissions, MissingRequiredArgument
+from discord.ext.commands import Bot, Context, CommandOnCooldown, CommandNotFound, NotOwner, MissingPermissions, BotMissingPermissions, MissingRequiredArgument
 from discord.ext.commands import when_mentioned_or
-from utils import initialize_sqlite_database
+from utils import initialize_sqlite_database, generate_command_not_found_responses, STATUSES_WITH_TYPES
 from database import DatabaseManager
 
 
@@ -50,21 +50,7 @@ class Mobius(Bot):
         """
         Setup the game status task of the bot.
         """
-        statuses_and_types: dict[str, ActivityType] = {
-            "with explosives 🧶": ActivityType.playing,
-            "with dolphins 🐬": ActivityType.playing,
-            "by himself 🌒": ActivityType.playing,
-            "with fish 🐠": ActivityType.playing,
-            "your mom 🙇‍♀️": ActivityType.playing,
-            "to your mom bitch 🤷‍♂️": ActivityType.listening,
-            "Fight club 🥊": ActivityType.watching,
-            "the world burn 🔥": ActivityType.watching,
-            "is hungry 🎣": ActivityType.custom,
-            "plotting his next move 💭": ActivityType.custom,
-            "hates you 😠": ActivityType.custom,
-            "needs to take a shit 💩": ActivityType.custom,
-        }
-
+        statuses_and_types: dict[str, ActivityType] = STATUSES_WITH_TYPES
         statuses = list(statuses_and_types.keys())
         status = random.choice(statuses)
         type = statuses_and_types.get(status)
@@ -151,6 +137,12 @@ class Mobius(Bot):
         if context is None or error is None:
             self.logger.error(
                 "A command error occurred but the error and/or context is None")
+        elif isinstance(error, CommandNotFound):
+            responses: list[str] = generate_command_not_found_responses(
+                context.message.content)
+            response: str = random.choice(responses)
+            await context.send(response)
+
         elif isinstance(error, CommandOnCooldown):
             minutes, seconds = divmod(error.retry_after, 60)
             hours, minutes = divmod(minutes, 60)
