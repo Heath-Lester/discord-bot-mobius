@@ -100,11 +100,10 @@ class General(Cog, name="general"):
         :param context: The hybrid command context.
         """
         embed = Embed(
-            description="Used [Krypton's](https://krypton.ninja) template",
             color=0xBEBEFE,
         )
         embed.set_author(name="Bot Information")
-        embed.add_field(name="Owner:", value="Krypton#7331", inline=True)
+        embed.add_field(name="Owner:", value="Lucian_Nailo", inline=True)
         embed.add_field(
             name="Python Version:", value=f"{platform.python_version()}", inline=True
         )

@@ -5,10 +5,9 @@ from os import listdir, name as os_name
 from logging import Logger
 from platform import python_version, system, release
 from aiosqlite import connect
-from discord import Message, Game, Embed, Intents
-from discord import __version__ as discord_version
+from discord import Message, Game, PartialEmoji, Embed, Intents, CustomActivity, Activity, ActivityType, DiscordException, __version__ as discord_version
 from discord.ext.tasks import loop
-from discord.ext.commands import Bot, Context, CommandOnCooldown, NotOwner, MissingPermissions, BotMissingPermissions, MissingRequiredArgument, CheckFailure, UserInputError, CommandError
+from discord.ext.commands import Bot, Context, CommandOnCooldown, NotOwner, MissingPermissions, BotMissingPermissions, MissingRequiredArgument
 from discord.ext.commands import when_mentioned_or
 from utils import initialize_sqlite_database
 from database import DatabaseManager
@@ -50,9 +49,26 @@ class Mobius(Bot):
         """
         Setup the game status task of the bot.
         """
-        statuses = ["with explosives :boom:", "with dolphins :dolphin:",
-                    "by himself :waxing_crescent_moon:", "with fish :tropical_fish:", "your mom :woman_bowing:"]
-        await self.change_presence(activity=Game(random.choice(statuses)))
+        statuses_and_types: dict[str, ActivityType] = {
+            "with explosives 🧶": ActivityType.playing,
+            "with dolphins 🐬": ActivityType.playing,
+            "by himself 🌒": ActivityType.playing,
+            "with fish 🐠": ActivityType.playing,
+            "your mom 🙇‍♀️": ActivityType.playing,
+            "to your mom bitch 🤷‍♂️": ActivityType.listening,
+            "Fight club 🥊": ActivityType.watching,
+            "is hungry 🎣": ActivityType.custom,
+            "plotting his next move 💭": ActivityType.custom,
+            "hates you 😠": ActivityType.custom,
+        }
+
+        statuses = list(statuses_and_types.keys())
+
+        status = random.choice(statuses)
+        type = statuses_and_types.get(status)
+        activity = Activity(name=status, type=type)
+
+        await self.change_presence(activity=activity)
 
     @status_task.before_loop
     async def before_status_task(self) -> None:
@@ -116,7 +132,7 @@ class Mobius(Bot):
                     context.author} (ID: {context.author.id}) in DMs"
             )
 
-    async def on_command_error(self=None, context: Context = None, error: CommandError | CheckFailure | UserInputError = None) -> None:
+    async def on_command_error(self=None, context: Context = None, error: DiscordException = None) -> None:
         """
         The code in this event is executed every time a normal valid command catches an error.
 
