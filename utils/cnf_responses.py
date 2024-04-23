@@ -1,4 +1,8 @@
-def generate_command_not_found_responses(bad_command: str) -> list[str]:
+def generate_command_not_found_responses(message_content: str) -> list[str]:
+    bad_command: str = message_content
+    if bad_command.startswith("!"):
+        bad_command = bad_command[1:]
+
     return list(
         [
             "We don't take those here",
