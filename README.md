@@ -1,5 +1,6 @@
 # Discord Bot Personality Mobius
 Temperamental Python (3.12) Discord Bot
+Inspired by: https://github.com/kkrypt0nn/Python-Discord-Bot-Template
 
 ## How to run locally
 1. Install [Python](https://www.python.org/downloads/) (obviously)
@@ -13,11 +14,11 @@ code .
 ```sh 
 python3 -m pip install -r requirements.txt
 ```
-6. Create `.env` file at the project level with bot token
+6. Create an `.env` file at the project level with bot token
 ```sh
 TOKEN=discord_bot_token_without_quotes
 ```
-7. Run Server
+7. Start the server
 ```sh
 python3 main.py runserver
 ```

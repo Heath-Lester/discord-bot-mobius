@@ -35,7 +35,7 @@ def extract_ats_from_message_content(message_content: str, message_limit: int = 
     return ats_list
 
 
-def does_ats_list_contain_id(ats_list: list[str], target_id: str) -> bool:
+def does_ats_list_contain_id(ats_list: list[str] | None, target_id: str) -> bool:
     """Determines if id is contained in a list of ids"""
     if target_id is None or ats_list is None or len(ats_list) == 0:
         return False
