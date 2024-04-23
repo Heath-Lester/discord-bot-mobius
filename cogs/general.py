@@ -2,7 +2,6 @@
 
 import platform
 import random
-
 from aiohttp import ClientSession
 from discord import Message, Interaction, Embed, Forbidden, User
 from discord.app_commands import ContextMenu

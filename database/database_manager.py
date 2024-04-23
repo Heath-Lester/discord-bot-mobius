@@ -1,4 +1,5 @@
 """SQLite database manager file"""
+
 from aiosqlite import Connection
 
 

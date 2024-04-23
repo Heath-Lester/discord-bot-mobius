@@ -1,4 +1,5 @@
 """File for Discord client utility functions"""
+
 from discord import Intents
 
 

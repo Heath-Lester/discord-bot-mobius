@@ -1,7 +1,8 @@
 """Application Access File"""
 
-import os
 import sys
+from os import getenv
+from os.path import realpath, dirname
 from discord import Intents
 from dotenv import load_dotenv
 from bot.mobius_bot import Mobius
@@ -10,14 +11,16 @@ from utils import assemble_intents, assemble_logger, get_config
 if __name__ == "__main__":
 
     # Logger
-    print("Starting Mobius bot server... ")
+    print("Initiating Mobius boot sequence... ")
     print("Assembling logger... ")
     LOGGER = assemble_logger()
     LOGGER.info("Logger assembled")
 
+    PROJECT_DIRECTORY = f"{realpath(dirname(__file__))}"
+
     # Bot Configuration
     LOGGER.info("Collecting config...")
-    CONFIG: dict[str, str] = get_config(LOGGER)
+    CONFIG: dict[str, str] = get_config(PROJECT_DIRECTORY, LOGGER)
     LOGGER.info("Config found")
 
     # Environment Variables
@@ -30,10 +33,10 @@ if __name__ == "__main__":
 
     # Discord Bot Token
     LOGGER.info("Validating TOKEN... ")
-    TOKEN: str | None = os.getenv("TOKEN")
+    TOKEN: str | None = getenv("TOKEN")
     if TOKEN is None:
         LOGGER.error("TOKEN was not provided in the environment")
-        sys.exit("exit")
+        sys.exit("server terminated")
     TOKEN = TOKEN.strip()
     if len(TOKEN) == 0:
         LOGGER.error("Provided TOKEN is empty")
@@ -43,11 +46,12 @@ if __name__ == "__main__":
     # Intents
     LOGGER.info("Assembling Intents... ")
     INTENTS: Intents = assemble_intents()
-    LOGGER.info("Client assembled")
+    LOGGER.info("Intents assembled")
 
     # Initialize Bot
     LOGGER.info("Instantiating Mobius... ")
-    BOT = Mobius(config=CONFIG, intents=INTENTS, logger=LOGGER)
+    BOT = Mobius(config=CONFIG, intents=INTENTS,
+                 project_directory=PROJECT_DIRECTORY, logger=LOGGER)
     LOGGER.info("Mobius instantiated")
 
     # Start Bot

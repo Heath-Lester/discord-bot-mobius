@@ -1,9 +1,7 @@
 """File for handling Discord bot actions and life cycle"""
 
-
 import random
 from os import listdir, name as os_name
-from os.path import realpath, dirname
 from logging import Logger
 from platform import python_version, system, release
 from aiosqlite import connect
@@ -19,7 +17,7 @@ from database import DatabaseManager
 class Mobius(Bot):
     """Class for Mobius bot"""
 
-    def __init__(self, config: dict[str, str], intents: Intents, logger: Logger) -> None:
+    def __init__(self, config: dict[str, str], intents: Intents, project_directory: str, logger: Logger) -> None:
         super().__init__(
             command_prefix=when_mentioned_or(config["prefix"]),
             intents=intents,
@@ -28,15 +26,15 @@ class Mobius(Bot):
 
         self.logger = logger
         self.config = config
+        self.project_directory = project_directory
         self.database: DatabaseManager = None
-        self.project_directory = f"{realpath(dirname(__file__))}/.."
 
     async def load_cogs(self) -> None:
         """
         The code in this function is executed whenever the bot will start.
         """
         for file in listdir(f"{self.project_directory}/cogs"):
-            if file.endswith(".py"):
+            if file.endswith(".py") and 'template' not in file:
                 extension = file[:-3]
                 try:
                     await self.load_extension(f"cogs.{extension}")
@@ -47,12 +45,13 @@ class Mobius(Bot):
                         f"Failed to load extension {extension}\n{exception}"
                     )
 
-    @loop(minutes=1.0)
+    @loop(minutes=2.0)
     async def status_task(self) -> None:
         """
         Setup the game status task of the bot.
         """
-        statuses = ["with you!", "with Krypton!", "with humans!"]
+        statuses = ["with explosives :boom:", "with dolphins :dolphin:",
+                    "by himself :waxing_crescent_moon:", "with fish :tropical_fish:", "your mom :woman_bowing:"]
         await self.change_presence(activity=Game(random.choice(statuses)))
 
     @status_task.before_loop
@@ -66,11 +65,6 @@ class Mobius(Bot):
         """
         This will just be executed when the bot starts the first time.
         """
-        self.logger.info(f"Logged in as {self.user.name}")
-        self.logger.info(f"discord.py API version: {discord_version}")
-        self.logger.info(f"Python version: {python_version()}")
-        self.logger.info(f"Running on: {system()} {release()} ({os_name})")
-        self.logger.info("-------------------")
         self.logger.info("Initializing database... ")
         await initialize_sqlite_database(self.project_directory)
         self.logger.info("Database initialized")
@@ -85,6 +79,12 @@ class Mobius(Bot):
             connection=await connect(f"{self.project_directory}/database/database.db")
         )
         self.logger.info("Database manager initialized")
+        self.logger.info("Mobius initialization complete")
+        self.logger.info("-------------------")
+        self.logger.info(f"Logged in as {self.user.name}")
+        self.logger.info(f"discord.py API version: {discord_version}")
+        self.logger.info(f"Python version: {python_version()}")
+        self.logger.info(f"Running on: {system()} {release()} ({os_name})")
 
     async def on_message(self=None, message: Message = None) -> None:
         """
