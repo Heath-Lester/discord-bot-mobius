@@ -21,7 +21,7 @@ python3 -m pip install -r requirements.txt
     "invite_link": "https://discord.com/oauth2/authorize?client_id=1231284567344812033&permissions=633318429163329&scope=bot"
 }
 ```
-7. Create an `.env` file at the project level with bot `TOKEN`:
+7. Create an `.env` file at the project level with a bot `TOKEN` from Discords [developer portal](https://discord.com/developers/applications):
 ```sh
 TOKEN=discord_bot_token_without_quotes
 ```
