@@ -57,9 +57,11 @@ class Mobius(Bot):
             "your mom 🙇‍♀️": ActivityType.playing,
             "to your mom bitch 🤷‍♂️": ActivityType.listening,
             "Fight club 🥊": ActivityType.watching,
+            "the world burn 🔥": ActivityType.watching,
             "is hungry 🎣": ActivityType.custom,
             "plotting his next move 💭": ActivityType.custom,
             "hates you 😠": ActivityType.custom,
+            "needs to take a shit 💩": ActivityType.custom,
         }
 
         statuses = list(statuses_and_types.keys())
