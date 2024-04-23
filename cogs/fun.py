@@ -1,3 +1,4 @@
+"""Discord Bot Cog File"""
 
 import random
 import aiohttp
@@ -17,7 +18,7 @@ class Choice(View):
 
     @button(label="Heads", style=ButtonStyle.blurple)
     async def confirm(
-        self, button: Button, interaction: Interaction
+        self, button: Button, interaction: Interaction  # pylint: disable=redefined-outer-name,unused-argument
     ) -> None:
         """Heads button"""
         self.value = "heads"
@@ -25,7 +26,7 @@ class Choice(View):
 
     @button(label="Tails", style=ButtonStyle.blurple)
     async def cancel(
-        self, button: Button, interaction: Interaction
+        self, button: Button, interaction: Interaction  # pylint: disable=redefined-outer-name,unused-argument
     ) -> None:
         """Tails button"""
         self.value = "tails"
@@ -170,4 +171,5 @@ class Fun(Cog, name="fun"):
 
 
 async def setup(bot: Bot) -> None:
+    """Used to load cog into bot"""
     await bot.add_cog(Fun(bot))

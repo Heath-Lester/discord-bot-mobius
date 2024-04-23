@@ -1,3 +1,4 @@
+"""Discord Bot Cog File"""
 
 from discord import Embed
 from discord.app_commands import describe
@@ -6,6 +7,8 @@ from discord.ext.commands import command, is_owner, hybrid_command
 
 
 class Owner(Cog, name="owner"):
+    """Class containing methods intended to be used by bot owners"""
+
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 
@@ -211,4 +214,5 @@ class Owner(Cog, name="owner"):
 
 
 async def setup(bot: Bot) -> None:
+    """Used to load cog into bot"""
     await bot.add_cog(Owner(bot))

@@ -1,3 +1,4 @@
+"""Discord Bot Cog File"""
 
 import platform
 import random
@@ -11,6 +12,8 @@ from discord.ext.commands import hybrid_command
 
 
 class General(Cog, name="general"):
+    """Cog class containing general methods to be used by anyone"""
+
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
         self.context_menu_user = ContextMenu(
@@ -43,7 +46,8 @@ class General(Cog, name="general"):
             color=0xBEBEFE,
         )
         if spoiler_attachment is not None:
-            embed.set_image(url=attachment.url)
+            # TODO: Verify this is not supposed to be attachment
+            embed.set_image(url=spoiler_attachment.url)
         await interaction.response.send_message(embed=embed, ephemeral=True)
 
     # User context menu command
@@ -66,6 +70,7 @@ class General(Cog, name="general"):
         name="help", description="List all commands the bot has loaded."
     )
     async def help(self, context: Context) -> None:
+        """Methods for displaying method names"""
         prefix = self.bot.config["prefix"]
         embed = Embed(
             title="Help", description="List of available commands:", color=0xBEBEFE
@@ -282,4 +287,5 @@ class General(Cog, name="general"):
 
 
 async def setup(bot: Bot) -> None:
+    """Used to load cog into bot"""
     await bot.add_cog(General(bot))

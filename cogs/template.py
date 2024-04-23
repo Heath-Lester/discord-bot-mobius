@@ -1,9 +1,13 @@
+"""Discord Bot Cog File"""
+
 from discord.ext import commands
-from discord.ext.commands import Context
+from discord.ext.commands import Bot, Context
 
 
 # Here we name the cog and create a new class for the cog.
 class Template(commands.Cog, name="template"):
+    """Template Cog Class"""
+
     def __init__(self, bot) -> None:
         self.bot = bot
 
@@ -21,10 +25,8 @@ class Template(commands.Cog, name="template"):
         """
         # Do your stuff here
 
-        # Don't forget to remove "pass", I added this just because there's no content in the method.
-        pass
-
 
 # And then we finally add the cog to the bot so that it can load, unload, reload and use it's content.
-async def setup(bot) -> None:
+async def setup(bot: Bot) -> None:
+    """Used to load cog into bot"""
     await bot.add_cog(Template(bot))
