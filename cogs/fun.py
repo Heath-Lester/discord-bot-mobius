@@ -2,11 +2,12 @@
 
 import random
 import aiohttp
-from discord import Button, ButtonStyle, Interaction, SelectOption, Embed
-from discord.ext.commands import Cog, Context, Bot
+from discord import ButtonStyle, Interaction, SelectOption, Embed
+from discord.ext.commands import Cog, Context
 from discord.ext.commands import hybrid_command
-from discord.ui import View, Select
+from discord.ui import View, Select, Button
 from discord.ui import button
+from bot import Mobius
 
 
 class Choice(View):
@@ -17,17 +18,13 @@ class Choice(View):
         self.value = None
 
     @button(label="Heads", style=ButtonStyle.blurple)
-    async def confirm(
-        self, button: Button, interaction: Interaction  # pylint: disable=redefined-outer-name,unused-argument
-    ) -> None:
+    async def confirm(self, interaction: Interaction, button: Button) -> None:
         """Heads button"""
         self.value = "heads"
         self.stop()
 
     @button(label="Tails", style=ButtonStyle.blurple)
-    async def cancel(
-        self, button: Button, interaction: Interaction  # pylint: disable=redefined-outer-name,unused-argument
-    ) -> None:
+    async def cancel(self, interaction: Interaction, button: Button) -> None:
         """Tails button"""
         self.value = "tails"
         self.stop()
@@ -102,7 +99,7 @@ class RockPaperScissorsView(View):
 class Fun(Cog, name="fun"):
     """Class containing Bot Text Games"""
 
-    def __init__(self, bot: Bot) -> None:
+    def __init__(self, bot: Mobius) -> None:
         self.bot = bot
 
     @hybrid_command(name="randomfact", description="Get a random fact.")
@@ -170,6 +167,6 @@ class Fun(Cog, name="fun"):
         await context.send("Please make your choice", view=view)
 
 
-async def setup(bot: Bot) -> None:
+async def setup(bot: Mobius) -> None:
     """Used to load cog into bot"""
     await bot.add_cog(Fun(bot))

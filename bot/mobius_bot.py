@@ -1,11 +1,12 @@
 """File for handling Discord bot actions and life cycle"""
 
 import random
+import sys
 from os import listdir, name as os_name
 from logging import Logger
 from platform import python_version, system, release
 from aiosqlite import connect
-from discord import Message, Game, PartialEmoji, Embed, Intents, CustomActivity, Activity, ActivityType, DiscordException, __version__ as discord_version
+from discord import Message, Embed, Intents, Activity, ActivityType, DiscordException, __version__ as discord_version
 from discord.ext.tasks import loop
 from discord.ext.commands import Bot, Context, CommandOnCooldown, NotOwner, MissingPermissions, BotMissingPermissions, MissingRequiredArgument
 from discord.ext.commands import when_mentioned_or
@@ -26,7 +27,7 @@ class Mobius(Bot):
         self.logger = logger
         self.config = config
         self.project_directory = project_directory
-        self.database: DatabaseManager = None
+        self.database: DatabaseManager | None = None
 
     async def load_cogs(self) -> None:
         """
@@ -98,18 +99,21 @@ class Mobius(Bot):
         self.logger.info("Database manager initialized")
         self.logger.info("Mobius initialization complete")
         self.logger.info("-------------------")
+        if self.user is None:
+            self.logger.critical("User is None")
+            sys.exit("server terminated")
         self.logger.info(f"Logged in as {self.user.name}")
         self.logger.info(f"discord.py API version: {discord_version}")
         self.logger.info(f"Python version: {python_version()}")
         self.logger.info(f"Running on: {system()} {release()} ({os_name})")
 
-    async def on_message(self=None, message: Message = None) -> None:
+    async def on_message(self=None, message: Message | None = None) -> None:
         """
         The code in this event is executed every time someone sends a message, with or without the prefix
 
         :param message: The message that was sent.
         """
-        if message.author == self.user or message.author.bot:
+        if message is None or message.author == self.user or message.author.bot:
             return
         await self.process_commands(message)
 
@@ -119,28 +123,35 @@ class Mobius(Bot):
 
         :param context: The context of the command that has been executed.
         """
-        full_command_name = context.command.qualified_name
-        split = full_command_name.split(" ")
-        executed_command = str(split[0])
-        if context.guild is not None:
-            self.logger.info(
-                f"Executed {executed_command} command in {context.guild.name} (ID: {context.guild.id}) by {
-                    context.author} (ID: {context.author.id})"
-            )
+        if context is None or context.command is None:
+            self.logger.error(
+                "Command completed but the context or context command is None")
         else:
-            self.logger.info(
-                f"Executed {executed_command} command by {
-                    context.author} (ID: {context.author.id}) in DMs"
-            )
+            full_command_name = context.command.qualified_name
+            split = full_command_name.split(" ")
+            executed_command = str(split[0])
+            if context.guild is not None:
+                self.logger.info(
+                    f"Executed {executed_command} command in {context.guild.name} (ID: {context.guild.id}) by {
+                        context.author} (ID: {context.author.id})"
+                )
+            else:
+                self.logger.info(
+                    f"Executed {executed_command} command by {
+                        context.author} (ID: {context.author.id}) in DMs"
+                )
 
-    async def on_command_error(self=None, context: Context = None, error: DiscordException = None) -> None:
+    async def on_command_error(self=None, context: Context | None = None, error: DiscordException | None = None) -> None:
         """
         The code in this event is executed every time a normal valid command catches an error.
 
         :param context: The context of the normal command that failed executing.
         :param error: The error that has been faced.
         """
-        if isinstance(error, CommandOnCooldown):
+        if context is None or error is None:
+            self.logger.error(
+                "A command error occurred but the error and/or context is None")
+        elif isinstance(error, CommandOnCooldown):
             minutes, seconds = divmod(error.retry_after, 60)
             hours, minutes = divmod(minutes, 60)
             hours = hours % 24
@@ -149,6 +160,8 @@ class Mobius(Bot):
                     f'{round(minutes)} minutes' if round(minutes) > 0 else ''} {f'{round(seconds)} seconds' if round(seconds) > 0 else ''}.",
                 color=0xE02B2B,
             )
+            if context is None:
+                self.logger.error("Context is None")
             await context.send(embed=embed)
         elif isinstance(error, NotOwner):
             embed = Embed(

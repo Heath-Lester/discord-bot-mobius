@@ -27,7 +27,7 @@ if __name__ == "__main__":
     LOGGER.info("Loading environment variables... ")
     LOADED = load_dotenv()
     if LOADED is False:
-        LOGGER.error("Environment not found!")
+        LOGGER.critical("Environment not found!")
         sys.exit("server terminated")
     LOGGER.info("Environment found")
 
@@ -35,11 +35,11 @@ if __name__ == "__main__":
     LOGGER.info("Validating TOKEN... ")
     TOKEN: str | None = getenv("TOKEN")
     if TOKEN is None:
-        LOGGER.error("TOKEN was not provided in the environment")
+        LOGGER.critical("TOKEN was not provided in the environment")
         sys.exit("server terminated")
     TOKEN = TOKEN.strip()
     if len(TOKEN) == 0:
-        LOGGER.error("Provided TOKEN is empty")
+        LOGGER.critical("Provided TOKEN is empty")
         sys.exit("server terminated")
     LOGGER.info("TOKEN validated")
 

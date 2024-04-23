@@ -4,16 +4,17 @@ import platform
 import random
 from aiohttp import ClientSession
 from discord import Message, Interaction, Embed, Forbidden, User
-from discord.app_commands import ContextMenu
+from discord.app_commands import ContextMenu, AppCommandError
 from discord.app_commands import describe
-from discord.ext.commands import Cog, Context, Bot
+from discord.ext.commands import Cog, Context, HybridCommandError
 from discord.ext.commands import hybrid_command
+from bot import Mobius
 
 
 class General(Cog, name="general"):
     """Cog class containing general methods to be used by anyone"""
 
-    def __init__(self, bot: Bot) -> None:
+    def __init__(self, bot: Mobius) -> None:
         self.bot = bot
         self.context_menu_user = ContextMenu(
             name="Grab ID", callback=self.grab_id
@@ -78,6 +79,8 @@ class General(Cog, name="general"):
             if i == "owner" and not (await self.bot.is_owner(context.author)):
                 continue
             cog = self.bot.get_cog(i.lower())
+            if cog is None:
+                raise HybridCommandError(AppCommandError("Guild is None"))
             commands = cog.get_commands()
             data = []
             for command in commands:
@@ -126,6 +129,9 @@ class General(Cog, name="general"):
 
         :param context: The hybrid command context.
         """
+        if context.guild is None:
+            raise HybridCommandError(AppCommandError("Guild is None"))
+
         roles = [role.name for role in context.guild.roles]
         num_roles = len(roles)
         if num_roles > 50:
@@ -284,6 +290,6 @@ class General(Cog, name="general"):
                 await context.send(embed=embed)
 
 
-async def setup(bot: Bot) -> None:
+async def setup(bot: Mobius) -> None:
     """Used to load cog into bot"""
     await bot.add_cog(General(bot))
