@@ -65,7 +65,6 @@ class Mobius(Bot):
         }
 
         statuses = list(statuses_and_types.keys())
-
         status = random.choice(statuses)
         type = statuses_and_types.get(status)
         activity = Activity(name=status, type=type)
