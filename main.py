@@ -59,5 +59,5 @@ if __name__ == "__main__":
     try:
         BOT.run(TOKEN)
     except Exception as e:
-        LOGGER.error(msg=f"Mobius failed while running: {
-                     type(e).__name__}: {e}", exc_info=True)
+        LOGGER.critical(msg=f"Mobius failed while running: {
+            type(e).__name__}: {e}", exc_info=True)
