@@ -8,7 +8,8 @@ from platform import python_version, system, release
 from aiosqlite import connect
 from discord import Message, Embed, Intents, Activity, ActivityType, DiscordException, __version__ as discord_version
 from discord.ext.tasks import loop
-from discord.ext.commands import Bot, Context, CommandOnCooldown, CommandNotFound, NotOwner, MissingPermissions, BotMissingPermissions, MissingRequiredArgument
+from discord.ext.commands import Bot, Context, CommandOnCooldown, CommandNotFound, NotOwner, MissingPermissions, CommandError
+from discord.ext.commands import BotMissingPermissions, MissingRequiredArgument, HybridCommandError
 from discord.ext.commands import when_mentioned_or
 from utils import initialize_sqlite_database, generate_command_not_found_responses, STATUSES_WITH_TYPES
 from database import DatabaseManager
@@ -141,6 +142,7 @@ class Mobius(Bot):
             responses: list[str] = generate_command_not_found_responses(
                 context.message.content)
             response: str = random.choice(responses)
+            self.logger.warn(str(error).capitalize())
             await context.send(response)
 
         elif isinstance(error, CommandOnCooldown):
@@ -170,6 +172,24 @@ class Mobius(Bot):
                     f"{context.author} (ID: {
                         context.author.id}) tried to execute an owner only command in the bot's DMs, but the user is not an owner of the bot."
                 )
+        elif isinstance(error, HybridCommandError):
+            embed = Embed(
+                title="Error!",
+                # Hybrid Command Failed.
+                description=str(error).capitalize(),
+                color=0xE02B2B,
+            )
+            self.logger.error(embed.description)
+            await context.send(embed=embed)
+        elif isinstance(error, CommandError):
+            embed = Embed(
+                title="Error!",
+                # Hybrid Command Failed.
+                description=str(error).capitalize(),
+                color=0xE02B2B,
+            )
+            self.logger.error(embed.description)
+            await context.send(embed=embed)
         elif isinstance(error, MissingPermissions):
             embed = Embed(
                 description="You are missing the permission(s) `"
@@ -177,6 +197,7 @@ class Mobius(Bot):
                 + "` to execute this command!",
                 color=0xE02B2B,
             )
+            self.logger.error(embed.description)
             await context.send(embed=embed)
         elif isinstance(error, BotMissingPermissions):
             embed = Embed(
@@ -185,6 +206,7 @@ class Mobius(Bot):
                 + "` to fully perform this command!",
                 color=0xE02B2B,
             )
+            self.logger.error(embed.description)
             await context.send(embed=embed)
         elif isinstance(error, MissingRequiredArgument):
             embed = Embed(
@@ -193,6 +215,7 @@ class Mobius(Bot):
                 description=str(error).capitalize(),
                 color=0xE02B2B,
             )
+            self.logger.error(embed.description)
             await context.send(embed=embed)
         else:
             raise error

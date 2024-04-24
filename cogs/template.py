@@ -6,7 +6,7 @@ from bot import Mobius
 
 
 # Here we name the cog and create a new class for the cog.
-class Template(commands.Cog, name="template"):
+class Template(commands.Cog, name="Template"):
     """Template Cog Class"""
 
     def __init__(self, bot: Mobius) -> None:

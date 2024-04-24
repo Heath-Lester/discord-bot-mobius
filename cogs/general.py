@@ -1,17 +1,15 @@
 """Discord Bot Cog File"""
 
 import platform
-import random
 from aiohttp import ClientSession
 from discord import Message, Interaction, Embed, Forbidden, User
 from discord.app_commands import ContextMenu, AppCommandError
-from discord.app_commands import describe
 from discord.ext.commands import Cog, Context, HybridCommandError
 from discord.ext.commands import hybrid_command
 from bot import Mobius
 
 
-class General(Cog, name="general"):
+class General(Cog, name="General"):
     """Cog class containing general methods to be used by anyone"""
 
     def __init__(self, bot: Mobius) -> None:
@@ -76,9 +74,9 @@ class General(Cog, name="general"):
             title="Help", description="List of available commands:", color=0xBEBEFE
         )
         for i in self.bot.cogs:
-            if i == "owner" and not (await self.bot.is_owner(context.author)):
+            if i == "Owner" and not (await self.bot.is_owner(context.author)):
                 continue
-            cog = self.bot.get_cog(i.lower())
+            cog = self.bot.get_cog(i)
             if cog is None:
                 raise HybridCommandError(AppCommandError("Guild is None"))
             commands = cog.get_commands()
@@ -132,12 +130,12 @@ class General(Cog, name="general"):
         if context.guild is None:
             raise HybridCommandError(AppCommandError("Guild is None"))
 
-        roles = [role.name for role in context.guild.roles]
-        num_roles = len(roles)
+        roles_list: list[str] = [role.name for role in context.guild.roles]
+        num_roles: int = len(roles_list)
         if num_roles > 50:
-            roles = roles[:50]
-            roles.append(f">>>> Displaying [50/{num_roles}] Roles")
-        roles = ", ".join(roles)
+            roles_list = roles_list[:50]
+            roles_list.append(f">>>> Displaying [50/{num_roles}] Roles")
+        roles: str = ", ".join(roles_list)
 
         embed = Embed(
             title="**Server Name:**", description=f"{context.guild}", color=0xBEBEFE
@@ -212,48 +210,6 @@ class General(Cog, name="general"):
             await context.send("I sent you a private message!")
         except Forbidden:
             await context.send(embed=embed)
-
-    @hybrid_command(
-        name="8ball",
-        description="Ask any question to the bot.",
-    )
-    @describe(question="The question you want to ask.")
-    async def eight_ball(self, context: Context, *, question: str) -> None:
-        """
-        Ask any question to the bot.
-
-        :param context: The hybrid command context.
-        :param question: The question that should be asked by the user.
-        """
-        answers = [
-            "It is certain.",
-            "It is decidedly so.",
-            "You may rely on it.",
-            "Without a doubt.",
-            "Yes - definitely.",
-            "As I see, yes.",
-            "Most likely.",
-            "Outlook good.",
-            "Yes.",
-            "Signs point to yes.",
-            "Reply hazy, try again.",
-            "Ask again later.",
-            "Better not tell you now.",
-            "Cannot predict now.",
-            "Concentrate and ask again later.",
-            "Don't count on it.",
-            "My reply is no.",
-            "My sources say no.",
-            "Outlook not so good.",
-            "Very doubtful.",
-        ]
-        embed = Embed(
-            title="**My Answer:**",
-            description=f"{random.choice(answers)}",
-            color=0xBEBEFE,
-        )
-        embed.set_footer(text=f"The question was: {question}")
-        await context.send(embed=embed)
 
     @hybrid_command(
         name="bitcoin",

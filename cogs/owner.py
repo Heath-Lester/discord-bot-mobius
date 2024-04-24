@@ -7,7 +7,7 @@ from discord.ext.commands import command, is_owner, hybrid_command
 from bot import Mobius
 
 
-class Owner(Cog, name="owner"):
+class Owner(Cog, name="Owner"):
     """Class containing methods intended to be used by bot owners"""
 
     def __init__(self, bot: Mobius) -> None:

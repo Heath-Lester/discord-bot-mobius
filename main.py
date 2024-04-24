@@ -5,7 +5,7 @@ from os import getenv
 from os.path import realpath, dirname
 from discord import Intents
 from dotenv import load_dotenv
-from bot.mobius_bot import Mobius
+from bot import Mobius
 from utils import assemble_intents, assemble_logger, get_config
 
 if __name__ == "__main__":

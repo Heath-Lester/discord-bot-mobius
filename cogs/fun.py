@@ -1,8 +1,9 @@
 """Discord Bot Cog File"""
 
 import random
-import aiohttp
+from aiohttp import ClientSession
 from discord import ButtonStyle, Interaction, SelectOption, Embed
+from discord.app_commands import describe
 from discord.ext.commands import Cog, Context
 from discord.ext.commands import hybrid_command
 from discord.ui import View, Select, Button
@@ -96,13 +97,13 @@ class RockPaperScissorsView(View):
         self.add_item(RockPaperScissors())
 
 
-class Fun(Cog, name="fun"):
+class Fun(Cog, name="Fun"):
     """Class containing Bot Text Games"""
 
     def __init__(self, bot: Mobius) -> None:
         self.bot = bot
 
-    @hybrid_command(name="randomfact", description="Get a random fact.")
+    @hybrid_command(name="randomfact", aliases=['factoid'], description="Get a random fact.")
     async def randomfact(self, context: Context) -> None:
         """
         Get a random fact.
@@ -110,7 +111,7 @@ class Fun(Cog, name="fun"):
         :param context: The hybrid command context.
         """
         # This will prevent your bot from stopping everything when doing a web request - see: https://discordpy.readthedocs.io/en/stable/faq.html#how-do-i-make-a-web-request
-        async with aiohttp.ClientSession() as session:
+        async with ClientSession() as session:
             async with session.get(
                 "https://uselessfacts.jsph.pl/random.json?language=en"
             ) as request:
@@ -127,7 +128,7 @@ class Fun(Cog, name="fun"):
                 await context.send(embed=embed)
 
     @hybrid_command(
-        name="coinflip", description="Make a coin flip, but give your bet before."
+        name="coinflip", aliases=['headsortails'], description="Make a coin flip, but give your bet before."
     )
     async def coinflip(self, context: Context) -> None:
         """
@@ -155,7 +156,7 @@ class Fun(Cog, name="fun"):
         await message.edit(embed=embed, view=None, content=None)
 
     @hybrid_command(
-        name="rps", description="Play the rock paper scissors game against the bot."
+        name="rps", aliases=["rockpaperscissors", "rock paper scissors"], description="Play the rock paper scissors game against the bot."
     )
     async def rock_paper_scissors(self, context: Context) -> None:
         """
@@ -165,6 +166,49 @@ class Fun(Cog, name="fun"):
         """
         view = RockPaperScissorsView()
         await context.send("Please make your choice", view=view)
+
+    @hybrid_command(
+        name="8ball",
+        aliases=['eightball'],
+        description="Ask any question to the bot.",
+    )
+    @describe(question="The question you want to ask.")
+    async def eight_ball(self, context: Context, *, question: str) -> None:
+        """
+        Ask any question to the bot.
+
+        :param context: The hybrid command context.
+        :param question: The question that should be asked by the user.
+        """
+        answers = [
+            "It is certain.",
+            "It is decidedly so.",
+            "You may rely on it.",
+            "Without a doubt.",
+            "Yes - definitely.",
+            "As I see, yes.",
+            "Most likely.",
+            "Outlook good.",
+            "Yes.",
+            "Signs point to yes.",
+            "Reply hazy, try again.",
+            "Ask again later.",
+            "Better not tell you now.",
+            "Cannot predict now.",
+            "Concentrate and ask again later.",
+            "Don't count on it.",
+            "My reply is no.",
+            "My sources say no.",
+            "Outlook not so good.",
+            "Very doubtful.",
+        ]
+        embed = Embed(
+            title="**My Answer:**",
+            description=f"{random.choice(answers)}",
+            color=0xBEBEFE,
+        )
+        embed.set_footer(text=f"The question was: {question}")
+        await context.send(embed=embed)
 
 
 async def setup(bot: Mobius) -> None:
