@@ -35,7 +35,7 @@ class Voice(Cog, name="Voice"):
             channel = context.author.voice.channel
 
         if channel is None:
-            raise CommandError("Author is None")
+            raise CommandError("Channel is None")
         try:
             self.voice_client = await channel.connect()
             await context.send(f"Whaddup cunts?")
