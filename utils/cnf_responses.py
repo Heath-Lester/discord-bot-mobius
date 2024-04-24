@@ -20,7 +20,7 @@ def generate_command_not_found_responses(message_content: str) -> list[str]:
             "It's almost like you can't succeed",
             "Just give up",
             "You know there's a menu right?",
-            "Why read the manual when you can fuck with if for six hours... ",
+            "Why read the manual when you can fuck with it... ",
             "I don't get paid enough for this",
             "Did anyone else hear that?",
             "If you can't, you probably shouldn't",
