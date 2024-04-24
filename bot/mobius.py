@@ -6,7 +6,7 @@ from os import listdir, name as os_name
 from logging import Logger
 from platform import python_version, system, release
 from aiosqlite import connect
-from discord import Message, Embed, Intents, Activity, ActivityType, DiscordException, __version__ as discord_version
+from discord import Message, Embed, Intents, Activity, ActivityType, DiscordException, VoiceClient, __version__ as discord_version
 from discord.ext.tasks import loop
 from discord.ext.commands import Bot, Context, CommandOnCooldown, CommandNotFound, NotOwner, MissingPermissions, CommandError
 from discord.ext.commands import BotMissingPermissions, MissingRequiredArgument, HybridCommandError
@@ -29,6 +29,9 @@ class Mobius(Bot):
         self.config = config
         self.project_directory = project_directory
         self.database: DatabaseManager | None = None
+        # TODO: Experimenting with setting voice client on bot instead of cogs so different apis can be used
+        # Like Youtube and Spotify
+        self.voice_client: VoiceClient | None = None
 
     async def load_cogs(self) -> None:
         """

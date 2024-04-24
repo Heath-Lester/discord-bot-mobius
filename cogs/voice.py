@@ -10,7 +10,7 @@ class Voice(Cog, name="Voice"):
 
     def __init__(self, bot: Mobius):
         self.bot = bot
-        self.voice_client: VoiceClient | None = None  # Store the connected voice client
+        # self.voice_client: VoiceClient | None = None  # Store the connected voice client
 
     @command(name='join', aliases=['summon', 'hereboy', 'psspsspss'], description="Have Mobius join your voice chat")
     async def join_vc(self, context: Context, channel: VoiceChannel | StageChannel | None = None):
@@ -24,10 +24,16 @@ class Voice(Cog, name="Voice"):
             raise CommandError("Author is None")
 
         if isinstance(context.author, Member) and context.author.voice is None:
-            await context.send("You must be connected to a voice channel to use this command.")
+            await context.send("Get in a room first dummy")
             return
 
-        if self.voice_client is not None and self.voice_client.is_connected():
+        # TODO: Experimenting with setting the voice client on the bot instead of the cog so multiple cogs
+        # can be used playing in voice channels but only one cog at a time playing?
+
+        # if self.voice_client is not None and self.voice_client.is_connected():
+        #     await context.send("I am already connected to a voice channel.")
+        #     return
+        if self.bot.voice_client is not None and self.bot.voice_client.is_connected():
             await context.send("I am already connected to a voice channel.")
             return
 
@@ -37,7 +43,8 @@ class Voice(Cog, name="Voice"):
         if channel is None:
             raise CommandError("Channel is None")
         try:
-            self.voice_client = await channel.connect()
+            # self.voice_client = await channel.connect()
+            self.bot.voice_client = await channel.connect()
             await context.send(f"Whaddup cunts?")
         except ClientException as e:
             raise CommandError("Failed to connect to voice channel.")
@@ -46,11 +53,15 @@ class Voice(Cog, name="Voice"):
     async def leave_vc(self, context: Context):
         """Disconnects the bot from the voice channel."""
 
-        if not self.voice_client or not self.voice_client.is_connected():
+        # if not self.voice_client or not self.voice_client.is_connected():
+        #     await context.send("I can't stop what I'm not doing... ")
+        #     return
+        if not self.bot.voice_client or not self.bot.voice_client.is_connected():
             await context.send("I can't stop what I'm not doing... ")
             return
 
-        await self.voice_client.disconnect()
+        # await self.voice_client.disconnect()
+        await self.bot.voice_client.disconnect()
         self.voice_client = None
         await context.send("See you cunts!")
 
