@@ -52,7 +52,7 @@ class Voice(Cog, name="Voice"):
 
         await self.voice_client.disconnect()
         self.voice_client = None
-        await context.send("See you, cunts!")
+        await context.send("See you cunts!")
 
 
 async def setup(bot: Mobius) -> None:
